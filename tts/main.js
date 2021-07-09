@@ -2,8 +2,6 @@ const voices = require("./info").voices;
 const qs = require("querystring");
 const brotli = require("brotli");
 const https = require("https");
-const md5 = require("js-md5");
-const base64 = require("js-base64");
 const http = require("http");
 
 // Fallback option for compatibility between Wrapper and https://github.com/Windows81/Text2Speech-Haxxor-JS.
@@ -117,27 +115,6 @@ module.exports = (voiceName, text) => {
 							"User-Agent":
 								"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
 						},
-					},
-					(r) => {
-						var buffers = [];
-						r.on("data", (d) => buffers.push(d));
-						r.on("end", () => res(Buffer.concat(buffers)));
-						r.on("error", rej);
-					}
-				);
-				break;
-			}
-			case "voiceforge": {
-				/* Special thanks to ItsCrazyScout for helping us find the new VoiceForge link! */
-				var q = qs.encode({
-					voice: voice.arg,
-					msg: text,
-				});
-				http.get(
-					{
-						host: "localhost",
-						port: "8181",
-						path: `/vfproxy/speech.php?${q}`,
 					},
 					(r) => {
 						var buffers = [];
