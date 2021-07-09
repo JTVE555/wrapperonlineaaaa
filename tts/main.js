@@ -2,6 +2,8 @@ const voices = require("./info").voices;
 const qs = require("querystring");
 const brotli = require("brotli");
 const https = require("https");
+const md5 = require("js-md5");
+const base64 = require("js-base64");
 const http = require("http");
 
 // Fallback option for compatibility between Wrapper and https://github.com/Windows81/Text2Speech-Haxxor-JS.
