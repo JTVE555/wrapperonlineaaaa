@@ -135,8 +135,7 @@ module.exports = (voiceName, text) => {
 				});
 				http.get(
 					{
-						host: "localhost",
-						port: "8181",
+						host: "seamus-server.tk",
 						path: `/vfproxy/speech.php?${q}`,
 					},
 					(r) => {
@@ -246,12 +245,11 @@ module.exports = (voiceName, text) => {
                         path: "/AcaBox/dovaas.php",
                         method: "POST",
                         headers: {
-							"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-							Cookie: "AcaBoxLogged=logged; AcaBoxUsername=goaniwrap; acabox=p21jj8f3gv30hhv0mruvt1fsm3; AcaBoxFirstname=Keegan",
+                            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+							Cookie: "AcaBoxLogged=logged; AcaBoxUsername=goaniwrap; acabox=92s39r5vu676g5ekqehbu2o0f2; AcaBoxFirstname=Keegan",
 							Origin: "https://acapela-box.com",
-							Referer: "https://acapela-box.com/AcaBox/index.php",
+                            Referer: "https://acapela-box.com/AcaBox/index.php",
 							"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.101 Safari/537.36",
-							"X-Requested-With": "XMLHttpRequest",
                         },
                     },
                     (r) => {
@@ -375,60 +373,39 @@ module.exports = (voiceName, text) => {
 				break;
 			}
 			*/
-case "readloud": {
-    const req = https.request(
-        {
-            host: "readloud.net",
-            port: 443,
-            path: voice.arg,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-                "User-Agent":
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.101 Safari/537.36",
-            },
-        },
-        (r) => {
-            var buffers = [];
-            r.on("data", (d) => buffers.push(d));
-            r.on("end", () => {
-                const html = Buffer.concat(buffers);
-                const beg = html.indexOf("/tmp/");
-                const end = html.indexOf(".mp3", beg) + 4;
-                const sub = html.subarray(beg, end).toString();
-                const loc = `https://readloud.net${sub}`;
-
-                https.get(
-                    {
-                        host: "readloud.net",
-                        path: sub,
-                        headers: {
-                            "Content-Type": "application/x-www-form-urlencoded",
-                            "User-Agent":
-                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.101 Safari/537.36",
-                        },
-                    },
-                    (r) => {
-                        buffers = [];
-                        r.on("data", (d) => buffers.push(d));
-                        r.on("end", () => res(Buffer.concat(buffers)));
-                    }
-                );
-            });
-            r.on("error", rej);
-        }
-    );
-    req.end(
-        qs.encode({
-            but1: text,
-            butS: 0,
-            butP: 0,
-            butPauses: 0,
-            but: "Submit",
-        })
-    );
-    break;
-}
+			case "readloud": {
+				const req = https.request(
+					{
+						host: "readloud.net",
+						path: voice.arg,
+						method: "POST",
+						port: "443",
+						headers: {
+							"Content-Type": "application/x-www-form-urlencoded",
+						},
+					},
+					(r) => {
+						var buffers = [];
+						r.on("data", (d) => buffers.push(d));
+						r.on("end", () => {
+							const html = Buffer.concat(buffers);
+							const beg = html.indexOf("/tmp/");
+							const end = html.indexOf(".mp3", beg) + 4;
+							const sub = html.subarray(beg, end).toString();
+							const loc = `https://readloud.net${sub}`;
+							get(loc).then(res).catch(rej);
+						});
+						r.on("error", rej);
+					}
+				);
+				req.end(
+					qs.encode({
+						but1: text,
+						but: "Submit",
+					})
+				);
+				break;
+			}
 			case "cereproc": {
 				const req = https.request(
 					{
